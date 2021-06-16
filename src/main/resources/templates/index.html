@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AboutMePage</title>
+</head>
+<body>
+<form action="#" method="post" th:action="@{/refresh}">
+    <input type="submit" value="Refresh Token"/>
+</form>
+<p>below You will see new Token</p><br>
+<b th:if="${newToken}" th:text="access_token "/> <i th:if="${newToken}" th:text="${newToken.getAccess_token()}"/><br>
+<b th:if="${newToken}" th:text="expires_in "/> <i th:if="${newToken}" th:text="${newToken.getExpires_in()}"/><br>
+<b th:if="${newToken}" th:text="scope "/> <i th:if="${newToken}" th:text="${newToken.getScope()}"/><br>
+<b th:if="${newToken}" th:text="refresh_token "/> <i th:if="${newToken}" th:text="${newToken.getRefresh_token()}"/><br><br>
+<form action="#" method="get" th:action="@{/aboutMe}">
+    <input type="submit" value="About Me"/>
+</form>
+<i th:if="${aboutMe}" th:text="${aboutMe.toPrettyString()}"/>
+
+</body>
+</html>
