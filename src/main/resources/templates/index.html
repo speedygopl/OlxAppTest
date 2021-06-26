@@ -14,10 +14,19 @@
 <b th:if="${newToken}" th:text="expires_in "/> <i th:if="${newToken}" th:text="${newToken.getExpires_in()}"/><br>
 <b th:if="${newToken}" th:text="scope "/> <i th:if="${newToken}" th:text="${newToken.getScope()}"/><br>
 <b th:if="${newToken}" th:text="refresh_token "/> <i th:if="${newToken}" th:text="${newToken.getRefresh_token()}"/><br><br>
+
 <form action="#" method="get" th:action="@{/aboutMe}">
     <input type="submit" value="About Me"/>
 </form>
 <i th:if="${aboutMe}" th:text="${aboutMe.toPrettyString()}"/>
+
+<form action="#" method="get" th:action="@{/adverts}">
+    <input type="submit" value="Adverts"/>
+</form>
+<i th:if="${size}" th:text="${size}"/><br>
+<ul>
+    <li th:each="advert: ${adverts}" th:text="${advert}"></li>
+</ul>
 
 </body>
 </html>
