@@ -20,12 +20,11 @@
 </form>
 <i th:if="${aboutMe}" th:text="${aboutMe.toPrettyString()}"/>
 
-<form action="#" method="get" th:action="@{/adverts}">
+<form action="#" method="get" th:action="@{/getadverts}">
     <input type="submit" value="Adverts"/>
 </form>
-<i th:if="${size}" th:text="${size}"/><br>
 <ul>
-    <li th:each="advert: ${adverts}" th:text="${advert}"></li>
+    <li th:each="advert: ${adverts}" th:text="${advert.toString()}"></li>
 </ul>
 
 </body>
