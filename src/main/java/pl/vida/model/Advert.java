@@ -1,22 +1,17 @@
 package pl.vida.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mysql.cj.protocol.ColumnDefinition;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import pl.vida.jsonnode.JsonNodeStringType;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
 @ToString
 @Entity
 @Table(name = "advert")
-@TypeDef(name = "JsonNode", typeClass = JsonNodeStringType.class)
 public class Advert {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,11 +38,12 @@ public class Advert {
     private Contact contact;
     @Embedded
     private Price price;
-    @Type(type = "JsonNode")
-    @Column(columnDefinition = "VARCHAR(1000)")
-    private JsonNode images;
-    @Type(type = "JsonNode")
-    private JsonNode attributes;
+    @Transient
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.ALL)
+    private List<Images> images;
+    @Transient
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.ALL)
+    private List<Attributes> attributes;
 }
 
 

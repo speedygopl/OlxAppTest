@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import pl.vida.model.Advert;
 import pl.vida.repository.AdvertRepository;
+import pl.vida.repository.AttributesRepository;
+import pl.vida.repository.ImagesRepository;
 import pl.vida.service.RequestEntity;
 
 import java.io.IOException;
@@ -29,20 +31,28 @@ public class AdvertsController {
 
     @Autowired
     AdvertRepository advertRepository;
+    @Autowired
+    AttributesRepository attributesRepository;
+    @Autowired
+    ImagesRepository imagesRepository;
 
 
     @RequestMapping("/saveadverts")
     public String saveAdverts() throws IOException {
         HttpEntity<String> requestEntity = entity.requestEntityProvider();
         String url = "https://www.olx.pl/api/partner/adverts";
-        ResponseEntity<JsonNode> responseEntity = template.exchange(url, HttpMethod.GET, requestEntity, JsonNode.class);
-        String adverts = responseEntity.getBody().get("data").toString();
+        ResponseEntity<String> responseEntity = template.exchange(url, HttpMethod.GET, requestEntity, String.class);
+        String adverts = responseEntity.getBody();
+        adverts = adverts.replaceAll("\\{\"data\":\\[", "\\[" );
+        adverts = adverts.replaceAll("\\}\\]\\}", "\\}\\]");
+        System.out.println(adverts);
+        try{
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try {
-            Advert[] array = objectMapper.readValue(adverts, Advert[].class);
-            for(Advert advert : array) {
-                Advert saved = advertRepository.save(advert);
-                System.out.println(saved);
+            Advert [] array = objectMapper.readValue(adverts, Advert[].class);
+            for(Advert a : array){
+                advertRepository.save(a);
+                attributesRepository.saveAll(a.getAttributes());
+                imagesRepository.saveAll(a.getImages());
             }
         } catch (Exception e) {
             System.out.println(e);
