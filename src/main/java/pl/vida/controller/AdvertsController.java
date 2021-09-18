@@ -12,9 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import pl.vida.model.Advert;
+import pl.vida.model.Attributes;
+import pl.vida.model.Images;
 import pl.vida.repository.AdvertRepository;
-import pl.vida.repository.AttributesRepository;
-import pl.vida.repository.ImagesRepository;
 import pl.vida.service.RequestEntity;
 
 import java.io.IOException;
@@ -27,14 +27,12 @@ public class AdvertsController {
     RestTemplate template = new RestTemplate();
     ObjectMapper objectMapper = new ObjectMapper();
     Advert advert = new Advert();
+    Images images = new Images();
 
 
     @Autowired
     AdvertRepository advertRepository;
-    @Autowired
-    AttributesRepository attributesRepository;
-    @Autowired
-    ImagesRepository imagesRepository;
+
 
 
     @RequestMapping("/saveadverts")
@@ -50,10 +48,15 @@ public class AdvertsController {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             Advert [] array = objectMapper.readValue(adverts, Advert[].class);
             for(Advert a : array){
+                for(Images image : a.getImages()){
+                    a.setAdvertInImages(image);
+                }
+                for(Attributes attribute : a.getAttributes()){
+                    a.setAdvertInAttributes(attribute);
+                }
                 advertRepository.save(a);
-                attributesRepository.saveAll(a.getAttributes());
-                imagesRepository.saveAll(a.getImages());
             }
+
         } catch (Exception e) {
             System.out.println(e);
         }

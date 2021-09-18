@@ -1,5 +1,6 @@
 package pl.vida.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,16 +8,14 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.List;
 
-@Setter
-@Getter
-@ToString
+@Data
 @Entity
 @Table(name = "advert")
 public class Advert {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ident", unique = true, nullable = false)
-    private Long ident;
+    public Long ident;
     private int id;
     private String status;
     private String url;
@@ -38,12 +37,18 @@ public class Advert {
     private Contact contact;
     @Embedded
     private Price price;
-    @Transient
-    @OneToMany(mappedBy = "advert", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.PERSIST)
     private List<Images> images;
-    @Transient
-    @OneToMany(mappedBy = "advert", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "advert", cascade = CascadeType.PERSIST)
     private List<Attributes> attributes;
+
+
+    public void setAdvertInImages (Images image){
+        image.setAdvert(this);
+    }
+    public void setAdvertInAttributes(Attributes attribute){
+        attribute.setAdvert(this);
+    }
 }
 
 
